@@ -7,6 +7,7 @@ export interface Candidate {
   email: string;
   city: string;
   experienceYears: number;
+  skills: string[];
 }
 
 // Tipo para un nuevo candidato (sin id)
@@ -17,7 +18,7 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // Función flecha para validar y limpiar los datos de entrada
 export const parseNewCandidate = (input: unknown): NewCandidate => {
-  const { name, email, city, experienceYears } = (input ?? {}) as Record<string, unknown>;
+  const { name, email, city, experienceYears, skills } = (input ?? {}) as Record<string, unknown>;
 
   // Regla 1: name y email son obligatorios
   if (
@@ -44,11 +45,24 @@ export const parseNewCandidate = (input: unknown): NewCandidate => {
     throw new DomainError('Los años de experiencia deben ser un número igual o mayor que 0');
   }
 
+  // Regla 5: skills es una lista de textos
+  let candidateSkills: string[] = [];
+  if (skills !== undefined) {
+    if (
+      !Array.isArray(skills) ||
+      skills.some((skill) => typeof skill !== 'string' || !skill.trim())
+    ) {
+      throw new DomainError('Las habilidades deben ser una lista de textos');
+    }
+    candidateSkills = skills.map((skill) => skill.trim());
+  }
+
   // Retorna datos limpios
   return {
     name: name.trim(),
     email: email.trim(),
     city: city.trim(),
     experienceYears,
+    skills: candidateSkills,
   };
 };

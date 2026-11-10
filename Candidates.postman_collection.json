@@ -1,0 +1,204 @@
+{
+  "info": {
+    "_postman_id": "b182cb90-a7d4-4f88-8cb6-681e813f4124",
+    "name": "TalentHub API - Candidates Persistence",
+    "description": "Colección de pruebas para el módulo Candidates con persistencia en PostgreSQL (Opción A) y soporte para repositorio en memoria.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Candidates",
+      "item": [
+        {
+          "name": "Listar candidatos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response is an array\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(Array.isArray(jsonData)).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/candidates",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["candidates"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear candidato",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Candidate has id assigned\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.id).to.be.a(\"number\");",
+                  "});",
+                  "",
+                  "pm.test(\"Skills is preserved as array without changes\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.skills).to.eql([\"TypeScript\", \"SQL\"]);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Valeria Castro\",\n  \"email\": \"valeria.castro@example.com\",\n  \"city\": \"Cuenca\",\n  \"experienceYears\": 3,\n  \"skills\": [\"TypeScript\", \"SQL\"]\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/candidates",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["candidates"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Ver candidato por ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response contains candidate data and skills\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property(\"email\");",
+                  "    pm.expect(Array.isArray(jsonData.skills)).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/candidates/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["candidates", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Editar candidato",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Candidate data updated\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.experienceYears).to.eql(4);",
+                  "});",
+                  "",
+                  "pm.test(\"Skills updated and preserved\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.skills).to.eql([\"TypeScript\", \"SQL\", \"Docker\"]);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Valeria Castro Actualizada\",\n  \"email\": \"valeria.castro@example.com\",\n  \"city\": \"Quito\",\n  \"experienceYears\": 4,\n  \"skills\": [\"TypeScript\", \"SQL\", \"Docker\"]\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/candidates/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["candidates", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar candidato",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 204\", function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/candidates/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["candidates", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

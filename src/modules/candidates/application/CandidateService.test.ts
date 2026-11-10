@@ -8,6 +8,7 @@ const sampleInput = {
   email: 'carlos.mendoza@example.com',
   city: 'Quito',
   experienceYears: 5,
+  skills: ['TypeScript', 'SQL'],
 };
 
 const createService = (): CandidateService =>
@@ -55,9 +56,15 @@ describe('CandidateService', () => {
     const updated = await service.update(created.id, {
       ...sampleInput,
       experienceYears: 6,
+      skills: ['TypeScript', 'SQL', 'Docker'],
     });
 
-    expect(updated).toEqual({ id: created.id, ...sampleInput, experienceYears: 6 });
+    expect(updated).toEqual({
+      id: created.id,
+      ...sampleInput,
+      experienceYears: 6,
+      skills: ['TypeScript', 'SQL', 'Docker'],
+    });
 
     // Falla si el id no existe
     await expect(service.update(999, sampleInput)).rejects.toThrow(NotFoundError);

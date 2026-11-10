@@ -2,7 +2,7 @@ import { DomainError } from '../../../shared/DomainError';
 import { parseNewCandidate } from './Candidate';
 
 describe('parseNewCandidate', () => {
-  it('returns valid candidate data trimmed', () => {
+  it('returns valid candidate data trimmed with default empty skills list', () => {
     const validCandidate = {
       name: '  Juan Pérez  ',
       email: '  juan.perez@example.com  ',
@@ -17,7 +17,57 @@ describe('parseNewCandidate', () => {
       email: 'juan.perez@example.com',
       city: 'Quito',
       experienceYears: 3,
+      skills: [],
     });
+  });
+
+  it('accepts a valid list of skills and trims each text', () => {
+    const candidateWithSkills = {
+      name: 'Ana Torres',
+      email: 'ana@correo.com',
+      city: 'Quito',
+      experienceYears: 2,
+      skills: ['  TypeScript  ', 'SQL  ', 'Node.js'],
+    };
+
+    const result = parseNewCandidate(candidateWithSkills);
+
+    expect(result.skills).toEqual(['TypeScript', 'SQL', 'Node.js']);
+  });
+
+  it('throws DomainError when skills is not a list of non-empty texts', () => {
+    // Caso 1: skills no es un array (es un string)
+    expect(() =>
+      parseNewCandidate({
+        name: 'Ana Torres',
+        email: 'ana@correo.com',
+        city: 'Quito',
+        experienceYears: 2,
+        skills: 'TypeScript',
+      }),
+    ).toThrow('Las habilidades deben ser una lista de textos');
+
+    // Caso 2: skills contiene textos vacíos o solo espacios
+    expect(() =>
+      parseNewCandidate({
+        name: 'Ana Torres',
+        email: 'ana@correo.com',
+        city: 'Quito',
+        experienceYears: 2,
+        skills: ['TypeScript', '   '],
+      }),
+    ).toThrow('Las habilidades deben ser una lista de textos');
+
+    // Caso 3: skills contiene elementos que no son texto (números)
+    expect(() =>
+      parseNewCandidate({
+        name: 'Ana Torres',
+        email: 'ana@correo.com',
+        city: 'Quito',
+        experienceYears: 2,
+        skills: ['TypeScript', 123],
+      }),
+    ).toThrow('Las habilidades deben ser una lista de textos');
   });
 
   it('throws when name or email is missing', () => {

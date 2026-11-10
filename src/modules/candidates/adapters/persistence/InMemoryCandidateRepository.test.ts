@@ -5,6 +5,7 @@ const sampleCandidate = {
   email: 'ana.gomez@example.com',
   city: 'Guayaquil',
   experienceYears: 4,
+  skills: ['TypeScript', 'SQL'],
 };
 
 describe('InMemoryCandidateRepository', () => {
@@ -20,7 +21,7 @@ describe('InMemoryCandidateRepository', () => {
     expect(saved).toEqual({ id: 1, ...sampleCandidate });
   });
 
-  it('lists candidates and returns safe copies', async () => {
+  it('lists candidates and returns safe copies including skills', async () => {
     const repository = new InMemoryCandidateRepository();
     await repository.save(sampleCandidate);
     const list = await repository.findAll();
@@ -30,8 +31,10 @@ describe('InMemoryCandidateRepository', () => {
 
     // Modificar la copia no debe alterar el estado interno
     list[0].name = 'Otro Nombre';
+    list[0].skills.push('GraphQL');
     const listAgain = await repository.findAll();
     expect(listAgain[0].name).toBe('Ana Gómez');
+    expect(listAgain[0].skills).toEqual(['TypeScript', 'SQL']);
   });
 
   it('finds a candidate by id and returns undefined when it does not exist', async () => {
@@ -49,9 +52,15 @@ describe('InMemoryCandidateRepository', () => {
     const updated = await repository.update(saved.id, {
       ...sampleCandidate,
       city: 'Cuenca',
+      skills: ['Node.js', 'PostgreSQL'],
     });
 
-    expect(updated).toEqual({ id: saved.id, ...sampleCandidate, city: 'Cuenca' });
+    expect(updated).toEqual({
+      id: saved.id,
+      ...sampleCandidate,
+      city: 'Cuenca',
+      skills: ['Node.js', 'PostgreSQL'],
+    });
     expect(await repository.update(999, sampleCandidate)).toBeUndefined();
   });
 

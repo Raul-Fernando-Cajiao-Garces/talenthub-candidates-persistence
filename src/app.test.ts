@@ -134,6 +134,7 @@ const validCandidatePayload = {
   email: 'maria.morales@example.com',
   city: 'Cuenca',
   experienceYears: 4,
+  skills: ['TypeScript', 'SQL'],
 };
 
 const createCandidate = async () =>

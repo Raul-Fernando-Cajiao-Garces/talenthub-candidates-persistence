@@ -33,8 +33,8 @@ app.use('/vacancies', createVacancyRouter(vancacyService));
 
 // Datos iniciales de candidatos
 const sampleCandidates = [
-  { id: 1, name: 'Ana Gómez', email: 'ana.gomez@example.com', city: 'Quito', experienceYears: 3 },
-  { id: 2, name: 'Carlos Mendoza', email: 'carlos.mendoza@example.com', city: 'Guayaquil', experienceYears: 5 },
+  { id: 1, name: 'Ana Gómez', email: 'ana.gomez@example.com', city: 'Quito', experienceYears: 3, skills: ['TypeScript', 'Node.js'] },
+  { id: 2, name: 'Carlos Mendoza', email: 'carlos.mendoza@example.com', city: 'Guayaquil', experienceYears: 5, skills: ['PostgreSQL', 'Express'] },
 ];
 
 // Ensamblado del módulo Candidates (Arquitectura Hexagonal)
